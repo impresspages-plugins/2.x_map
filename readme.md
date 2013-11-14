@@ -8,7 +8,7 @@ Displays a Google map.
 
 ## Install
 
-1.Upload the `navigation` folder to your website's `ip_plugins` folder.
+1. Upload the `navigation` folder to your website's `ip_plugins` folder.
 2. Login to the administration area.
 3. Go to `Developer -> Modules` tab, and press `Install` button.
 
