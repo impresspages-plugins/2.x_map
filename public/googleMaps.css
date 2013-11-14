@@ -1,0 +1,13 @@
+.ipsMap{
+    height: 400px;
+    width: 100%;
+}
+
+.ipLocationOptions{
+    padding-top: 10px;
+}
+
+.ipLocation{
+    width: 100%;
+    margin: 0;
+}
