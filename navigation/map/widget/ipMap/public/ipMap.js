@@ -1,4 +1,7 @@
 function IpWidget_ipMap(widgetObject) {
+    "use strict";
+
+    var marker, markerlng, markerlat;
 
     this.widgetObject = widgetObject;
 
@@ -13,6 +16,12 @@ function IpWidget_ipMap(widgetObject) {
 
         widget.find('.ipLocation').val(instanceData.locationEntered);
 
+
+        var zoomLevel;
+        var latitude;
+        var longitude;
+        var mapView;
+        var height;
 
         if (instanceData.zoom){
             zoomLevel = instanceData.zoom;
@@ -38,6 +47,31 @@ function IpWidget_ipMap(widgetObject) {
 
         map = new google.maps.Map(widget.find('.ipsMap')[0], mapOptions);
 
+        if ((typeof instanceData.markerlat != 'undefined') && (typeof instanceData.markerlng != 'undefined')) {
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(instanceData.markerlat, instanceData.markerlng),
+                map: map
+            });
+        }
+
+        function placeMarker(location) {
+            if ( marker ) {
+                marker.setPosition(location);
+            } else {
+                marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                });
+            }
+
+            var markerPos = marker.getPosition();
+            instanceData.markerlat = markerPos.lat();
+            instanceData.markerlng = markerPos.lng();
+        }
+
+        google.maps.event.addListener(map, 'click', function(event) {
+            placeMarker(event.latLng);
+        });
 
         // add slider for map height
         widget.find( '.ipsMapSize').slider();
@@ -79,17 +113,15 @@ function IpWidget_ipMap(widgetObject) {
                 // Why 17? Because it looks good.
             }
 
-            var marker = new google.maps.Marker({
-                position : place.geometry.location,
-                map : map,
-                draggable : true,
-            });
-
         });
 
     }
 
     function prepareData() {
+
+
+        var widget = this.widgetObject;
+        var instanceData = widget.data('ipWidget').data;
 
         var data = Object();
 
@@ -97,6 +129,11 @@ function IpWidget_ipMap(widgetObject) {
 
         data.lat = curLatLng.lat();
         data.lng = curLatLng.lng();
+
+        if ((typeof(instanceData.markerlat) !== 'undefined') && (typeof(instanceData.markerlng) !== 'undefined')) {
+            data.markerlat = instanceData.markerlat;
+            data.markerlng = instanceData.markerlng;
+        }
 
         data.zoom = map.getZoom();
         data.mapview = map.mapTypeId;
